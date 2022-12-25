@@ -20,3 +20,8 @@ class UserOut(BaseModel):
     phone: str
     email: str
     create_at: datetime
+
+
+class TokenPayload(BaseModel):
+    sub: str = None
+    exp: int = None
