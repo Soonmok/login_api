@@ -1,0 +1,23 @@
+version: "3.8"
+
+services:
+  api:
+      image: login_api:latest
+      ports:
+        - "8000:8000"
+      command: uvicorn --reload --host 0.0.0.0 --port 8000 app.main:app
+      volumes:
+        - .:/workspace:z
+      depends_on:
+        - db
+      environment:
+        DATABASE_URL: "postgresql://postgres:mypassword@db/user_db"
+
+  db:
+    image: postgres:13
+    ports:
+      - "2345:5432"
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "mypassword"
+      POSTGRES_DB: "user_db"
