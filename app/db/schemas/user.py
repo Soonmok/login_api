@@ -25,6 +25,13 @@ class UserCreate(BaseModel):
         orm_mode = True
 
 
+class UserPasswordUpdateIn(BaseModel):
+    email: str
+    phone: str
+    sms_code: str
+    password: str
+
+
 class UserOut(BaseModel):
     user_id: UUID4
     nickname: str

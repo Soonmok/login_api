@@ -5,7 +5,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
 from app.db.models.user import User, Token
-from app.db.schemas.user import UserOut, UserCreate, UserIn
+from app.db.schemas.user import UserOut, UserCreate, UserIn, UserPasswordUpdateIn
 from app.db.session import get_session
 from app.dependencies import get_current_user, create_access_token, ACCESS_TOKEN_EXPIRE_MINUTES, authenticate_user
 from app.services import get_users_service, get_sms_service
@@ -39,6 +39,33 @@ async def create_user(user_in: UserIn,
 @router.get("/users/me", tags=["users"], summary="내 정보 조회", response_model=UserOut)
 async def read_user_me(user: User = Depends(get_current_user)):
     return user
+
+
+@router.patch("/users/edit_password", tags=["users"], summary="비밀번호 수정 및 토큰 발급", response_model=Token)
+async def update_password(user_password_update_in: UserPasswordUpdateIn,
+                          users_service=Depends(get_users_service),
+                          sms_service=Depends(get_sms_service)):
+    # 이미 유저가 존재하는지 파악
+    if not users_service.check_if_user_already_exists(user_password_update_in.email, user_password_update_in.phone):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="User does not exist",
+        )
+
+    # sms_code가 유효한지 파악
+    if not sms_service.validate_sms_code(user_password_update_in.phone, user_password_update_in.sms_code):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="SMS code is not valid",
+        )
+
+    # DB에 유저 정보 업데이트
+    user = users_service.update_password(user_password_update_in.email, user_password_update_in.password)
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": user.email}, expires_delta=access_token_expires
+    )
+    return {"access_token": access_token, "token_type": "bearer"}
 
 
 @router.post("/token", tags=["auth"], summary="엑세스 토큰 생성", response_model=Token)

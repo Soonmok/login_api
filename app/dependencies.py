@@ -51,7 +51,7 @@ def verify_password(plain_password, hashed_password):
 
 def authenticate_user(db_session, email: str, password: str):
     user = get_user(db_session=db_session, email=email)
-    if not user or not user.phone_verified:
+    if not user:
         return False
     if not verify_password(password, user.password):
         return False
