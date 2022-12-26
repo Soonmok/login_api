@@ -1,6 +1,8 @@
 from alembic import context
 
-from app.db.models.user import Base
+from app.db.models.base import Base
+from app.db.models.user import User
+from app.db.models.sms import SMS
 
 target_metadata = Base.metadata
 

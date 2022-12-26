@@ -4,10 +4,9 @@ import sqlalchemy as sa
 from pydantic import BaseModel
 from sqlalchemy.dialects.postgresql import UUID
 
-from typing import Any, Union
-from sqlalchemy.ext.declarative import declarative_base
+from typing import Union
 
-Base: Any = declarative_base()
+from app.db.models.base import Base
 
 
 class User(Base):
