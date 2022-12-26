@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 
 from ..db.models.user import User
 from ..db.schemas.user import UserCreate
+from ..dependencies import get_password_hash
 
 
 class UsersService:
@@ -14,6 +15,7 @@ class UsersService:
 
     def create(self, user_create: UserCreate) -> User:
         user = User(**user_create.dict())
+        user.password = get_password_hash(user.password)
         self.db_session.add(user)
         self.db_session.commit()
         return user

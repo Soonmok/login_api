@@ -4,13 +4,14 @@ from pydantic.types import UUID4
 
 
 class UserCreate(BaseModel):
-    user_id: UUID4
     nickname: str
-    password: str
     name: str
     phone: str
     email: str
-    create_at: datetime
+    created_at: datetime
+
+    class Config:
+        orm_mode = True
 
 
 class UserOut(BaseModel):
@@ -19,7 +20,10 @@ class UserOut(BaseModel):
     name: str
     phone: str
     email: str
-    create_at: datetime
+    created_at: datetime
+
+    class Config:
+        orm_mode = True
 
 
 class TokenPayload(BaseModel):
