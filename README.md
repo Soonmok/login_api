@@ -16,9 +16,12 @@ Fastapi를 이용한 간단한 login api
 	docker build -t login_api:latest .
 
 	# api와 데이터 베이스 띄우기
-	docker-compose up
+	docker-compose up -d
 
-	# 테스트 실행 (새로운 터미널 창에서 실행)
+    # 데이터베이스 마이그레이션 하기
+    docker-compose exec api alembic upgrade head
+
+	# 테스트 실행 
 	export ENV=local # pytest code가 띄워진 데이터베이스를 바라보게 하도록 env 변수 설정 
     pytest
 
