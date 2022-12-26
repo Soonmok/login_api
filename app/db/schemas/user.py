@@ -10,7 +10,7 @@ class UserIn(BaseModel):
     phone: str
     email: str
     sms_code: str
-    created_at: datetime
+    created_at: datetime = datetime.utcnow()
 
 
 class UserCreate(BaseModel):
@@ -19,7 +19,7 @@ class UserCreate(BaseModel):
     name: str
     phone: str
     email: str
-    created_at: datetime
+    created_at: datetime = datetime.utcnow()
 
     class Config:
         orm_mode = True
@@ -38,7 +38,7 @@ class UserOut(BaseModel):
     name: str
     phone: str
     email: str
-    created_at: datetime
+    created_at: datetime = datetime.utcnow()
 
     class Config:
         orm_mode = True
