@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from random import randint
 
 from sqlalchemy.orm import Session
@@ -19,3 +20,14 @@ class SmsService:
         self.db_session.add(sms)
         self.db_session.commit()
         return sms
+
+    def validate_sms_code(self, phone, auth_code) -> bool:
+        try:
+            expire = datetime.utcnow() - timedelta(minutes=5)
+            sms_record = self.db_session.query(SMS) \
+                .filter(SMS.phone == phone, SMS.created_at > expire) \
+                .order_by(SMS.created_at.desc()).first()
+            return True if sms_record.auth_code == auth_code else False
+        except Exception as e:
+            print(e)
+            return False

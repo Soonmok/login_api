@@ -5,7 +5,7 @@ from pydantic import BaseModel
 
 class SmsIn(BaseModel):
     phone: str
-    created_at: datetime
+    created_at: datetime = datetime.utcnow()
 
     class Config:
         orm_mode = True

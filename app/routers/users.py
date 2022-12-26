@@ -5,25 +5,33 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
 from app.db.models.user import User, Token
-from app.db.schemas.user import UserOut, UserCreate
+from app.db.schemas.user import UserOut, UserCreate, UserIn
 from app.db.session import get_session
 from app.dependencies import get_current_user, create_access_token, ACCESS_TOKEN_EXPIRE_MINUTES, authenticate_user
-from app.services import get_users_service
+from app.services import get_users_service, get_sms_service
 
 router = APIRouter()
 
 
 @router.post('/users/signup', tags=["users"], summary="회원 가입", response_model=UserOut)
-async def create_user(user_create: UserCreate, users_service=Depends(get_users_service)):
-    # querying database to check if user already exist
-    if users_service.check_if_user_already_exists(user_create.email, user_create.phone):
+async def create_user(user_in: UserIn,
+                      users_service=Depends(get_users_service),
+                      sms_service=Depends(get_sms_service)):
+    # 이미 유저가 존재하는지 파악
+    if users_service.check_if_user_already_exists(user_in.email, user_in.phone):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="User already exist",
         )
 
-    # TODO: 전화 인증 추가 필요
-    # saving user to database
+    # sms_code가 유효한지 파악
+    if not sms_service.validate_sms_code(user_in.phone, user_in.sms_code):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="SMS code is not valid",
+        )
+    # DB에 유저 생성
+    user_create = UserCreate(**user_in.dict())
     user = users_service.create(user_create)
     return user
 

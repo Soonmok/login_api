@@ -17,7 +17,6 @@ class User(Base):
     password = sa.Column(sa.Text, nullable=False)
     name = sa.Column(sa.Text, nullable=False)
     phone = sa.Column(sa.Text, nullable=False)
-    phone_verified = sa.Column(sa.Boolean, nullable=False, default=False)
     email = sa.Column(sa.Text, nullable=False)
     created_at = sa.Column(sa.DateTime, server_default=sa.func.now(), nullable=False)
 
