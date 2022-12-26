@@ -12,6 +12,18 @@ class UserIn(BaseModel):
     sms_code: str
     created_at: datetime = datetime.utcnow()
 
+    class Config:
+        schema_extra = {
+            "example": {
+                "nickname": "johndoe",
+                "password": "password1",
+                "name": "john doe",
+                "phone": "01012345678",
+                "email": "john@gmail.com",
+                "sms_code": "123456"
+            }
+        }
+
 
 class UserCreate(BaseModel):
     nickname: str
@@ -23,6 +35,15 @@ class UserCreate(BaseModel):
 
     class Config:
         orm_mode = True
+        schema_extra = {
+            "example": {
+                "nickname": "johndoe",
+                "password": "password1",
+                "name": "john doe",
+                "phone": "01012345678",
+                "email": "john@gmail.com"
+            }
+        }
 
 
 class UserPasswordUpdateIn(BaseModel):
@@ -30,6 +51,16 @@ class UserPasswordUpdateIn(BaseModel):
     phone: str
     sms_code: str
     password: str
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "password": "password1",
+                "phone": "01012345678",
+                "email": "john@gmail.com",
+                "sms_code": "123456"
+            }
+        }
 
 
 class UserOut(BaseModel):
@@ -42,6 +73,16 @@ class UserOut(BaseModel):
 
     class Config:
         orm_mode = True
+        schema_extra = {
+            "example": {
+                "user_id": "a0eebc99",
+                "nickname": "johndoe",
+                "name": "john doe",
+                "phone": "01012345678",
+                "email": "john@gmail.com",
+                "created_at": "2021-01-01 00:00:00"
+            }
+        }
 
 
 class TokenPayload(BaseModel):

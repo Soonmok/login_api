@@ -68,7 +68,7 @@ async def update_password(user_password_update_in: UserPasswordUpdateIn,
     return {"access_token": access_token, "token_type": "bearer"}
 
 
-@router.post("/token", tags=["auth"], summary="엑세스 토큰 생성", response_model=Token)
+@router.post("/token", tags=["auth"], summary="엑세스 토큰 생성 (login)", response_model=Token)
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(),
                                  db_session: Session = Depends(get_session)):
     # form_data의 username은 유저별 구분자이며, 여기서는 email로 구분하도록 한다.

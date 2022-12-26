@@ -1,5 +1,7 @@
 import os
 
+from sqlalchemy_utils import database_exists, create_database
+
 os.environ['JWT_SECRET_KEY'] = '09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7'
 
 from typing import Any, Generator
@@ -17,6 +19,8 @@ from app.main import app
 def db() -> Session:
     db_session = create_session()
     engine = db_session.bind
+    if not database_exists(engine.url):
+        create_database(engine.url)
     Base.metadata.bind = engine
     Base.metadata.drop_all()
     Base.metadata.create_all()

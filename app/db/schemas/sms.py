@@ -9,6 +9,11 @@ class SmsIn(BaseModel):
 
     class Config:
         orm_mode = True
+        schema_extra = {
+            "example": {
+                "phone": "01012345678"
+            }
+        }
 
 
 class SmsCreate(SmsIn):
@@ -16,3 +21,9 @@ class SmsCreate(SmsIn):
 
     class Config:
         orm_mode = True
+        schema_extra = {
+            "example": {
+                "phone": "01012345678",
+                "auth_code": "123456"
+            }
+        }

@@ -9,3 +9,4 @@ WORKDIR /workspaces
 RUN pip install -r requirements.txt
 
 ENV PYTHONPATH "${PYTHONPATH}:/workspaces"
+ENV ENV "prod"

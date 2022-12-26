@@ -1,3 +1,6 @@
+from datetime import datetime
+from time import sleep
+
 import pytest
 from fastapi.testclient import TestClient
 
@@ -9,7 +12,7 @@ class TestUserRouter:
     def test_create_user(self, app_client: TestClient) -> None:
         # sms code 요청
         sms_payload = {
-            "phone": "01011111111"
+            "phone": self.phone_number
         }
 
         response = app_client.post("/sms", json=sms_payload)
@@ -78,4 +81,47 @@ class TestUserRouter:
         assert response.json()['detail'] == 'Incorrect username or password'
 
 
+class TestUserUpdateRouter:
+    phone_number = "01033333333"
+    email = "tnsahr25803"
+
+    def test_password_edit(self, app_client: TestClient) -> None:
+        # sms code 요청
+        sms_payload = {
+            "phone": self.phone_number
+        }
+
+        response = app_client.post("/sms", json=sms_payload)
+        auth_code = response.json()["auth_code"]
+
+        # 회원가입
+        payload = {
+            "nickname": "Soonmok",
+            "password": "password12",
+            "name": "Soonmok2",
+            "phone": self.phone_number,
+            "email": self.email,
+            "sms_code": auth_code
+        }
+        response = app_client.post("/users/signup", json=payload)
+        assert response.status_code == 200
+
+        # 비밀번호 수정
+        payload = {
+            "email": self.email,
+            "phone": self.phone_number,
+            "sms_code": auth_code,
+            "password": "password123"
+        }
+        response = app_client.patch("/users/edit_password", json=payload)
+        assert response.status_code == 200
+
+        # 재로그인
+        payload = {
+            "username": self.email,
+            "password": "password123",
+        }
+        response = app_client.post("/token", data=payload)
+        assert response.status_code == 200
+        assert response.json()['access_token']
 
