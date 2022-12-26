@@ -21,4 +21,5 @@ async def send_sms(sms_in: SmsIn, sms_service=Depends(get_sms_service)):
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail="External service unavailable",
         )
+    # 원래는 Client가 auth_code를 보면 안되지만, 우리는 문자 메세지를 보내지 않으므로 보여준다.
     return sms
