@@ -1,3 +1,4 @@
+import pytest
 from fastapi.testclient import TestClient
 
 
@@ -12,9 +13,9 @@ class TestUserRouter:
         }
 
         response = app_client.post("/sms", json=sms_payload)
-        self.auth_code = response.json()["auth_code"]
+        pytest.auth_code = response.json()["auth_code"]
         assert response.status_code == 200
-        assert len(self.auth_code) == 6
+        assert len(pytest.auth_code) == 6
 
         # 회원가입
         payload = {
@@ -23,10 +24,9 @@ class TestUserRouter:
             "name": "Soonmok",
             "phone": self.phone_number,
             "email": "tnsahr2580",
-            "sms_code": self.auth_code
+            "sms_code": pytest.auth_code
         }
         response = app_client.post("/users/signup", json=payload)
-        print(response.json())
         assert response.status_code == 200
 
     def test_signin_again(self, app_client: TestClient) -> None:
@@ -37,10 +37,9 @@ class TestUserRouter:
             "name": "Soonmok",
             "phone": self.phone_number,
             "email": "tnsahr2580",
-            "sms_code": self.auth_code
+            "sms_code": pytest.auth_code
         }
         response = app_client.post("/users/signup", json=payload)
-        print(response.json())
         assert response.status_code == 400
         assert response.json()['detail'] == 'User already exist'
 
@@ -77,3 +76,6 @@ class TestUserRouter:
         response = app_client.post("/token", data=payload)
         assert response.status_code == 401
         assert response.json()['detail'] == 'Incorrect username or password'
+
+
+
